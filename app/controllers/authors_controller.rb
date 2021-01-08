@@ -1,5 +1,6 @@
 class AuthorsController < ApplicationController
-    
+
+    skip_before_action :verify_authenticity_token
     before_action :set_author, only: [:show, :update, :destroy]
 
     def index 
@@ -17,6 +18,7 @@ class AuthorsController < ApplicationController
 
     def create 
         author = Author.new(author_params)
+        
         if author.save 
             render json: author
         else 
