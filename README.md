@@ -1,27 +1,5 @@
-# README
+# BookStore-Backend
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
 
 1. Project title : The name of this project is Book Store. This project lets a user to add a new book or author. After creating, a user can see all the existing authors or books. After clicking on a link, the details of an author/book can be viewed. Updating or deleting an author/book option available to the user.
 
@@ -115,18 +93,3 @@ export default connect(null, mapDispatchToProps)(CreateAuthor);
             render json: author.errors 
         end 
     end 
-
-7. Installation : https://github.com/nabilhayet/bookstore-frontend.git 
-                  https://github.com/nabilhayet/bookstore-backend.git
-
-8. Reference : https://learn.co/tracks/online-software-engineering-structured/redux/async-redux/redux-thunk
-               https://learn.co/tracks/online-software-engineering-structured/redux/react-redux-continued/when-to-connect-react-and-redux
-               https://learn.co/tracks/online-software-engineering-structured/redux/redux-library/combine-reducers-codealong
-               https://learn.co/tracks/online-software-engineering-structured/redux/building-redux/redux-create-store-lab
-               https://learn.co/tracks/online-software-engineering-structured/react/async-react/async-react
-               https://learn.co/tracks/online-software-engineering-structured/react/lifecycle-methods/react-component-lifecycle-overview
-               https://learn.co/tracks/online-software-engineering-structured/react/forms/forms
-
-9. Tests -- Go to backend folder using cd from parent directory. -- Type 'rails s' to run the server -- run 'npm start' to open the page in the browser. -- To add an author click on 'Add Author' Navlink in the browser. -- To create a book click on 'Add Book' link in the browser. -- To view all books click on 'View Books'. -- To view all authors click on 'View Authors'. -- To view details of a book/author click on the individual name of book/author.-- To update/delete any particular author click on 'update/delete' button.
-
-10. Credits : https://www.youtube.com/watch?v=3iISwPKdJ3E&feature=youtu.be
