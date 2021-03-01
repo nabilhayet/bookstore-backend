@@ -123,8 +123,8 @@ class AuthorsController < ApplicationController
    @author = Author.find_by_id(params[:id])
   end
 	
- def author_params
-  params.require(:author).permit(:first_name, :last_name, :age, :contact)
+  def author_params
+   params.require(:author).permit(:first_name, :last_name, :age, :contact)
+  end
  end
-end
 ```
