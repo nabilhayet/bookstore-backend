@@ -33,13 +33,15 @@ Table of Contents
 ## Tech-Stack
 <p>This web app makes use of the following:</p>
 
-* react: "^17.0.1",	
-*	react-dom: "^17.0.1",
-*	react-redux: "^7.2.2",
-*	react-router-dom: "^5.2.0",
-*	react-scripts: "4.0.1",
-*	redux: "^4.0.5",
-*	redux-thunk: "^2.3.0",
+* ruby '2.6.1'
+* rails, '~> 6.0.3', '>= 6.0.3.4'
+* sqlite3, '~> 1.4'
+* puma, '~> 4.1'
+* sass-rails, '>= 6'
+* webpacker, '~> 4.0'
+* rack-cors
+* pry
+* active_model_serializers, '~> 0.10.0'
 
 
 ## Installing
@@ -54,203 +56,75 @@ Table of Contents
         
 ## Challenges
 <ul>
-<li> Implementing redux state with react</li>
-<li> Whenever an item was deleted the page wasn't updated automatically</li>
-<li> Accessing the id of an item inside nested url</li>
-<li> Creating the dropdown menu in book component</li>
+<li> The serializer wasn't working properly to filter out json data</li>
+<li> I didn't know how to display error message on the DOM</li>
+<li> It took me a while to figure out the params</li>
 </ul>
 
 ## Future-Implementation
 <ul>
-<li> Add bootstrap to make the UI more appealing</li>
-<li> Insert image for each book</li>
-<li> Add more classes like Genre</li>
+<li> Refactor APIs and data relationships</li>
+<li> Deployment to production server</li>
 </ul> 
 
 ## Code-Snippet 
 
 ```
-class CreateAuthor extends Component {
- constructor(){
-  super()
-  this.state = {
-   firstname: "",
-   lastname: "",
-   age: "",
-   contact: "",
-   submittedData: [],
-   gotAuthor: false,
-   id: ""
-  }
- }
+class Author < ApplicationRecord	
+ has_many :books
+	
+ validates :first_name, presence: true
+ validates :last_name, presence: true
+ validates :age, presence: true
+ validates :contact, presence: true
+ validates :age, numericality: { only_integer: true }
+ validates :contact, numericality: { only_integer: true }
+end
+```
+
+```
+class AuthorSerializer < ActiveModel::Serializer	
+ attributes :id, :first_name, :last_name, :age, :contact
+ has_many :books
+end
+```
+
+```
+class AuthorsController < ApplicationController	
+ skip_before_action :verify_authenticity_token
+ before_action :set_author, only: [:show, :update, :destroy]
+	
+ def index
+	authors = Author.all
+	render json: authors
+ end
+	
+ def show
+  if @author
+	 render json: @author
+	else
+	 render json: {status: "error", code:3000, message: "This id does not exist" }
+	end
+ end
+	
+ def create
+	author = Author.new(author_params)
+	if author.save
+	 render json: author
+	else
+	 render json: author.errors
+	end
+ end
+ ```
  
- handleChange = event => {
-  this.setState({
-   [event.target.id]: event.target.value
-  })
- }
- 
- handleSubmit =(event) => {
-  event.preventDefault()
-  const author = {first_name: this.state.firstname, last_name: this.state.lastname, age: this.state.age, contact: this.state.contact}
-  this.createNewAuthor(author)
- }
+ ```
+ private	
+	def set_author
+	 @author = Author.find_by_id(params[:id])
+	end
+	
+ def author_params
+	params.require(:author).permit(:first_name, :last_name, :age, :contact)
+ end
+end
 ```
-
-```
- createNewAuthor = (author) => {
-  const configobj = {
-   method: 'POST',
-   body: JSON.stringify(author),
-   headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
-   }
-  }
-  fetch('http://localhost:3000/authors',configobj)
-  .then(response => response.json())
-  .then(author => { 
-    this.props.addAuthor(author)
-    this.setState({
-     gotAuthor: true,
-     id: author.id 
-    })
-  })
-}
-```
-
-```
-render() {
- return(
-  <div>
-   <form onSubmit={event => this.handleSubmit(event)}>
-   <p>
-    <label>First Name</label>
-    <input type="text" id="firstname" onChange={event => this.handleChange(event)} value={this.state.firstname} required/>
-   </p>
-   <p>
-    <label>Last Name</label>
-    <input type="text" id="lastname" onChange={event => this.handleChange(event)} value={this.state.lastname} required/>
-   </p>
-   {this.state.gotAuthor && (<Redirect to={`/authors/${this.state.id}`}/>)}
- </div>
- );
-}
-```
-
-```
-const mapDispatchToProps = dispatch => {
- return {
-  addAuthor: author => { dispatch(addAuthor(author)) }
- }
-}
-export default connect(null, mapDispatchToProps)(CreateAuthor);
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-# BookStore-Backend
-
-
-1. Project title : The name of this project is Book Store. This project lets a user to add a new book or author. After creating, a user can see all the existing authors or books. After clicking on a link, the details of an author/book can be viewed. Updating or deleting an author/book option available to the user.
-
-2. Motivation : This project was created to provide a platform which will allow the user to add an author/book in a single website. Instead of creating two separate application for both, i decided to build something that would connect the both classes.
-
-3. Tech/framework used Built with 1.React 2.HTML 3.CSS 4.JS 5.SQL
-
-4. Features --A user can add an author. --A user can view all the authors. --Display details of an author. --A user can add a book. --A user can view all the books. --Display details of one book. Search for a particular book using search box. --Update an author/book from the existing ones. --Delete an author/book.
-
-5. For this project, activerecord, active_model_serializers, puma, sqlite3, rake, rack-cors, byebug, listen, spring-watcher-listen gems were used.
-
-6. Code Snippet :
-
-class CreateAuthor extends Component {
-  constructor(){
-    super()
-    this.state = {
-      firstname: "",
-      lastname: "",
-      age: "",
-      contact: "",
-      submittedData: [],
-      gotAuthor: false,
-      id: ""
-    }
-
-  }
-  handleChange = event => {
-    this.setState({
-      [event.target.id]: event.target.value
-    })
-  }
-  handleSubmit =(event) => {
-    event.preventDefault()
-    const author = {first_name: this.state.firstname, last_name: this.state.lastname, age: this.state.age, contact: this.state.contact}
-    this.createNewAuthor(author)
-  }
-  createNewAuthor = (author) => {
-    const configobj = {
-      method: 'POST',
-      body: JSON.stringify(author),
-      headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-      }
-    }
-    fetch('http://localhost:3000/authors',configobj)
-    .then(response => response.json())
-    .then(author => { 
-      this.props.addAuthor(author)
-      this.setState({
-        gotAuthor: true,
-        id: author.id 
-      })
-     
-    })
-  }
-render() {
-    return(
-      <div>
-        <form onSubmit={event => this.handleSubmit(event)}>
-          <p>
-            <label>First Name</label>
-            <input type="text" id="firstname" onChange={event => this.handleChange(event)}
-            value={this.state.firstname} required/>
-          </p>
-          <p>
-            <label>Last Name</label>
-            <input type="text" id="lastname" onChange={event => this.handleChange(event)}
-            value={this.state.lastname} required/>
-          </p>
-            {this.state.gotAuthor && (
-          <Redirect to={`/authors/${this.state.id}`}/>
-        )}
-      </div>
-    );
-  }
-  const mapDispatchToProps = dispatch => {
-  return {
-      addAuthor: author => { dispatch(addAuthor(author)) }
-    }
-}
-export default connect(null, mapDispatchToProps)(CreateAuthor);
-
-  def create 
-        author = Author.new(author_params)
-        
-        if author.save 
-            render json: author
-        else 
-            render json: author.errors 
-        end 
-    end 
